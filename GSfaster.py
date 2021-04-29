@@ -32,8 +32,8 @@ from matplotlib.ticker import AutoMinorLocator
 import timeit
 
 #define grid
-u = np.linspace(-1,1,101)
-r = np.linspace(0.0,2.0,101)
+u = np.linspace(-1,1,51)
+r = np.linspace(0.0,2.0,51)
 
 #find stellar radius
 rid = np.where(r>1)[0][0]-1
@@ -58,15 +58,17 @@ def init(A):
     return A
 
 
+# r^2 sin^2 term
 def source(S):
     for i in range(1,Nr-1):
         for j in range(1,Nu-1):
             if r[i]<1.0:
-                S[i,j] = (r[i])**2.0*(1-u[j]**2)*(1-r[i]**2)*1.574
+                S[i,j] = (r[i])**2.0*(1-u[j]**2)   #*(1-r[i]**2)
             else:
                 S[i,j] = 0.0
     return S
-    
+   
+# beta beta_prime term 
 def source2(Ac,rid,uid):
     SS = np.zeros((Nr,Nu))
     for i in range(1,Nr-1):
@@ -77,7 +79,8 @@ def source2(Ac,rid,uid):
                 SS[i,j] = 0.0    
     return SS
     
-    
+
+#linearize source term
 def derivS(AA,rid,uid):
     dS = np.zeros((Nr,Nu))
     for i in range(1,Nr-1):
@@ -111,11 +114,12 @@ def solve_boundary(A):
     
     for j in range(Nu):
         A[0,j] = 0.0
-        A[Nr-1,j] = 0.0#(1-u[j]**2)/r[Nr-1]/2.0#(5*r[0]**3/r[Nr-1] - 3*r[0]**5/r[Nr-1] + 3*r[Nr-1]**4 - 5*r[Nr-1]**2)*(1-u[j]**2)/30.0
+        A[Nr-1,j] = 0.0   #(1-u[j]**2)/r[Nr-1]/2.0#(5*r[0]**3/r[Nr-1] - 3*r[0]**5/r[Nr-1] + 3*r[Nr-1]**4 - 5*r[Nr-1]**2)*(1-u[j]**2)/30.0
            
     return A
     
-       
+
+# modify denominator   
 def new_den(d, dS):
     dnew = np.zeros((Nr,Nu))
     for i in range(1,Nr-1):
@@ -128,7 +132,7 @@ def new_den(d, dS):
     return dnew 
     
 
-       
+#modify source (only second term)       
 def new_source(Ac, S2, dS):
     Snew = np.zeros((Nr,Nu))
     for i in range(1,Nr-1):
@@ -160,7 +164,7 @@ def L2_error(p, pn):
     return np.sqrt(np.sum((p - pn)**2)/np.sum(pn**2))
 
 start = timeit.default_timer()
-w = 1
+w = 0.1
 
 for n in range(tNum):
 
@@ -179,7 +183,7 @@ for n in range(tNum):
     
     
     print(error)
-    if error<1e-8:
+    if error<1e-7:
         break 
     if math.isnan(error):
         print("Exiting loop. Nan found")
@@ -190,10 +194,10 @@ stop = timeit.default_timer()
 
 print('Time: ', stop - start) 
 
-out_folder = 'Output'
+out_folder = 'Output_field/'
 if not os.path.exists(out_folder):
   os.makedirs(out_folder)
 
-np.savetxt(out_folder+'A_nr_%s_%s.txt'%(str(strength),str(power)), A)
+np.savetxt(out_folder+'A_n1_%s_%s.txt'%(str(strength),str(power)), A)
 
 

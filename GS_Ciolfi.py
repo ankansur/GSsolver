@@ -74,7 +74,7 @@ def source2(Ac,rid,uid):
             if np.abs(Ac[i,j]/Ac[rid,uid])>1:
                 SS[i,j] = strength*Ac[i,j]*(np.abs(Ac[i,j]/Ac[rid,uid])-1)
             else:
-                SS[i,j] = 0.0    
+                SS[i,j] = 0.0
     return SS
     
     
@@ -82,10 +82,10 @@ def Falpha(Ac, rid, uid):
     ff = np.zeros((Nr,Nu))
     for i in range(1,Nr-1):
         for j in range(1,Nu-1):
-            if np.abs(Ac[i,j]/Ac[rid,uid])<1: 
+            if np.abs(Ac[i,j]/Ac[rid,uid])>k: 
                 ff[i,j] = r[i]**2.0*(1-u[j]**2)*((1.0-np.abs(Ac[i,j]/Ac[rid,uid]))**4-k)
             else:
-                ff[i,j] = -k*r[i]**2.0*(1-u[j]**2)
+                ff[i,j] = 0.0
     return ff
    
     

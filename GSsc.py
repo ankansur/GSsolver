@@ -45,7 +45,7 @@ dr = r[2]-r[1]
 du = u[2]-u[1]
 
 #input parameters
-strength = 20
+strength = 10
 power = 1.1
 
 tNum = 10000000
@@ -78,6 +78,11 @@ def solve_boundary(A):
         A[Nr-1,j] = 0.0#(1-u[j]**2)/r[Nr-1]/2.0#(5*r[0]**3/r[Nr-1] - 3*r[0]**5/r[Nr-1] + 3*r[Nr-1]**4 - 5*r[Nr-1]**2)*(1-u[j]**2)/30.0
            
     return A
+    
+    
+def cal_B_mag():
+    
+    
     
 A = np.zeros((Nr,Nu))
 A = init(A)
